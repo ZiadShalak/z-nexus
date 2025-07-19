@@ -1,4 +1,4 @@
-name: Deploy to Production Server
+name: 🚀 Deploy to Production
 
 on:
   push:
@@ -10,28 +10,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      # 1) Get your code
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      # --- ADD THIS NEW DEBUGGING STEP ---
-      - name: Debug Secrets
-        run: |
-          if [ -z "${{ secrets.SERVER_SSH_KEY }}" ]; then
-            echo "SERVER_SSH_KEY secret is NOT set or is empty."
-          else
-            echo "SERVER_SSH_KEY secret IS set."
-          fi
-
+      # 2) Install SSH & write key
       - name: Setup SSH
-        uses: shimataro/ssh-key-action@v2
-        with:
-          ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
-          known_hosts: ${{ secrets.SERVER_KNOWN_HOSTS }}
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y openssh-client
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          # disable strict host checking
+          cat << 'EOF' > ~/.ssh/config
+Host *
+  StrictHostKeyChecking no
+  UserKnownHostsFile=/dev/null
+EOF
 
-      - name: Add Production Remote
-        run: git remote add production ssh://${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}/opt/git/z-nexus.git
+      # 3) Backup your existing site
+      - name: Backup remote site
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "mkdir -p ${{ secrets.BACKUP_PATH }} && \
+             tar czf ${{ secrets.BACKUP_PATH }}/linkpage-$(date +%Y%m%d-%H%M%S).tar.gz \
+               -C $(dirname ${{ secrets.DEPLOY_PATH }}) $(basename ${{ secrets.DEPLOY_PATH }})"
 
-      - name: Push to Production
-        run: git push production main
+      # 4) Upload the new files
+      - name: Upload via SCP
+        run: |
+          scp -r ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}
+
+      # 5) Fix permissions
+      - name: Fix remote perms
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "chown -R www-data:www-data ${{ secrets.DEPLOY_PATH }}"
