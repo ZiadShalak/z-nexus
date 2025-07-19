@@ -32,9 +32,9 @@ jobs:
 
       - name: Upload via SCP
         run: |
-          scp -r ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}
+          scp -r * ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}
 
       - name: Fix remote perms
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            "chown -R www-data:www-data ${{ secrets.DEPLOY_PATH }}"
+            "chmod -R a+rX ${{ secrets.DEPLOY_PATH }}"
