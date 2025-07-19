@@ -1,0 +1,28 @@
+name: 🚀 Auto‑Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Start ssh-agent and add key
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.SSH_DEPLOY_KEY }}
+
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 78.101.17.233 >> ~/.ssh/known_hosts
+
+      - name: Push to production bare repo
+        run: |
+          git remote add production ssh://ziad@78.101.17.233/opt/git/z-nexus.git
+          git push production HEAD:main --force
