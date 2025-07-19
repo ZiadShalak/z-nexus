@@ -1,3 +1,4 @@
+# .github/workflows/deploy.yml
 name: 🚀 Auto‑Deploy to Server
 
 on:
@@ -9,18 +10,19 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1) Grab your code
+      # 1) Checkout your code
       - name: Check out code
         uses: actions/checkout@v3
 
-      # 2) Run the deploy hook on your server via SSH
-      - name: Trigger remote deploy hook
-        uses: appleboy/ssh-action@master
+      # 2) SSH in and trigger your existing hook
+      - name: Run deploy hook on server
+        uses: appleboy/ssh-action@v0.1.8
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || '22' }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            # this will back up and deploy via your existing post-receive hook
+            echo "=== Running post-receive hook ==="
             bash /opt/git/z-nexus.git/hooks/post-receive
+            echo "=== Done ==="
