@@ -1,50 +1,32 @@
-name: 🚀 Deploy to Server
+name: Deploy to Production Server
 
 on:
   push:
     branches:
-      - main  # or your production branch
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Grab your latest code
-      - name: Check out code
-        uses: actions/checkout@v3
+      # 1. Get the code from your GitHub repository
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # 2) Install SSH client & configure key
-      - name: Set up SSH
-        run: |
-          sudo apt-get update -yq
-          sudo apt-get install -yq openssh-client
-          mkdir -p ~/.ssh
-          # Write the private key into id_rsa
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          # Disable strict host checking
-          cat << 'EOF' > ~/.ssh/config
-Host *
-    StrictHostKeyChecking no
-    UserKnownHostsFile=/dev/null
-EOF
+      # 2. Set up the SSH key and add your server to known_hosts
+      - name: Setup SSH
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          known_hosts: ${{ secrets.SERVER_KNOWN_HOSTS }}
 
-      # 3) Backup remote site
-      - name: Backup remote site
-        run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            "mkdir -p ${{ secrets.BACKUP_PATH }} && \
-             tar czf ${{ secrets.BACKUP_PATH }}/linkpage-$(date +%Y%m%d-%H%M%S).tar.gz \
-             -C $(dirname ${{ secrets.DEPLOY_PATH }}) $(basename ${{ secrets.DEPLOY_PATH }})"
+      # 3. Add your production server as a Git remote
+      - name: Add Production Remote
+        run: git remote add production ssh://${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}/opt/git/z-nexus.git
 
-      # 4) Copy your app directory
-      - name: Upload build via SCP
-        run: |
-          scp -r ./* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}
-
-      # 5) Fix permissions on the server
-      - name: Fix remote permissions
-        run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            "chown -R www-data:www-data ${{ secrets.DEPLOY_PATH }}"
+      # 4. Push to your server to trigger its post-receive hook
+      - name: Push to Production
+        run: git push production main
