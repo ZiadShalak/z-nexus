@@ -13,21 +13,19 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name: Install SSH key
+      - name: Prepare SSH key & known_hosts
         run: |
           mkdir -p ~/.ssh
-          # write the secret, strip CRs, save as the key
+          # write the secret, strip CR's, save as id_deploy
           echo "${{ secrets.SSH_DEPLOY_KEY }}" | tr -d '\r' > ~/.ssh/id_deploy
           chmod 600 ~/.ssh/id_deploy
+          # trust GitHub and your server
+          ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+          ssh-keyscan -H 78.101.17.233 >> ~/.ssh/known_hosts
 
-      - name: Add GitHub & Server to known_hosts
-        run: |
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          ssh-keyscan 78.101.17.233 >> ~/.ssh/known_hosts
-
-      - name: Push to production bare repo
+      - name: Deploy to production
         env:
-          # tell git over which SSH to talk
+          # point SSH at our key
           GIT_SSH_COMMAND: 'ssh -i ~/.ssh/id_deploy -o StrictHostKeyChecking=no'
         run: |
           git remote add production ssh://ziad@78.101.17.233/opt/git/z-nexus.git
