@@ -1,8 +1,10 @@
+# .github/workflows/deploy.yml
 name: 🚀 Deploy to Server
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -12,28 +14,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Debug SSH key secret
-        shell: bash
-        run: |
-          echo -n "${{ secrets.SSH_PRIVATE_KEY }}" | wc -c | xargs printf "SSH_PRIVATE_KEY length: %s\n"
-          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
-            echo "❌ SSH_PRIVATE_KEY is empty!"
-            exit 1
-          else
-            echo "✅ SSH_PRIVATE_KEY is set."
-          fi
-
-
       - name: Setup SSH
         run: |
           sudo apt-get update -y
           sudo apt-get install -y openssh-client
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" \
-            | tr -d '\r' > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          printf "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null\n" \
-            > ~/.ssh/config
+          printf "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null\n" > ~/.ssh/config
 
       - name: Backup remote site
         run: |
