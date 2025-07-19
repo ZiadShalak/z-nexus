@@ -1,0 +1,49 @@
+name: 🚀 Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) Check out the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2) Install SSH client and write deploy key
+      - name: Setup SSH
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y openssh-client
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          # Disable host verification prompts
+          cat << 'EOF' > ~/.ssh/config
+Host *
+  StrictHostKeyChecking no
+  UserKnownHostsFile=/dev/null
+EOF
+
+      # 3) Backup the current site on the server
+      - name: Backup remote site
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "mkdir -p ${{ secrets.BACKUP_PATH }} && \
+             tar czf ${{ secrets.BACKUP_PATH }}/linkpage-$(date +%Y%m%d-%H%M%S).tar.gz \
+               -C $(dirname ${{ secrets.DEPLOY_PATH }}) $(basename ${{ secrets.DEPLOY_PATH }})"
+
+      # 4) Upload your new files to the server
+      - name: Upload files via SCP
+        run: |
+          scp -r ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}
+
+      # 5) Fix permissions so Nginx can read them
+      - name: Fix remote permissions
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "chown -R www-data:www-data ${{ secrets.DEPLOY_PATH }}"
