@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Link Page Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="controls">
+            
+            <div class="accordion">
+                <button type="button" class="accordion-header active">
+                    <h2>Create Your Page</h2>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-panel" style="max-height: 1500px;">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" placeholder="Your Name">
+
+                    <label for="bio">Short Bio</label>
+                    <textarea id="bio" placeholder="A little about yourself..."></textarea>
+                    
+                    <label for="pic-url">Profile Picture URL</label>
+                    <input type="url" id="pic-url" placeholder="https://...">
+
+                    <label for="pic-upload" class="file-upload-label">Or Upload a Picture</label>
+                    <input type="file" id="pic-upload" accept="image/*" style="display: none;">
+                </div>
+            </div>
+
+            <div class="accordion">
+                <button type="button" class="accordion-header">
+                    <h3>Style & Appearance</h3>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-panel">
+                    <label>Theme</label>
+                    <button type="button" id="theme-picker-btn">
+                        <span id="current-theme-name">Custom Colors</span>
+                    </button>
+                    <select id="theme-selector" style="display: none;"></select>
+
+                    <label>Font</label>
+                    <button type="button" id="font-picker-btn">
+                        <span id="current-font-name">System Default</span>
+                    </button>
+                    <select id="font-selector" style="display: none;"></select>
+
+                    <label for="animation-picker-btn">Link Animation</label>
+                    <button type="button" id="animation-picker-btn">
+                        <span id="current-animation-name">None</span>
+                    </button>
+                    <select id="animation-selector" style="display: none;"></select>
+
+                    <label for="card-shadow-selector">Card Shadow</label>
+                    <select id="card-shadow-selector">
+                        <option value="shadow-soft">Soft</option>
+                        <option value="shadow-hard">Hard</option>
+                        <option value="shadow-none">None</option>
+                    </select>
+                    
+                    <div class="color-controls">
+                        <div>
+                            <label for="bg-color">Card BG</label>
+                            <input type="color" id="bg-color" value="#FFFFFF">
+                        </div>
+                        <div>
+                            <label for="text-color">Text</label>
+                            <input type="color" id="text-color" value="#000000">
+                        </div>
+                        <div>
+                            <label for="btn-color">Buttons</label>
+                            <input type="color" id="btn-color" value="#333333">
+                        </div>
+                    </div>
+
+                    <div class="input-with-clear">
+                        <label for="page-bg-color">Page Background Color</label>
+                        <div>
+                            <input type="color" id="page-bg-color" value="#F4F4F9">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="page-bg-image-url">Page Background Image</label>
+                        <input type="url" id="page-bg-image-url" placeholder="Paste an image URL...">
+                        
+                        <label for="page-bg-upload" class="file-upload-label">Or Upload an Image</label>
+                        <input type="file" id="page-bg-upload" accept="image/*" style="display: none;">
+                    
+                        <div class="overlay-controls" id="overlay-controls-wrapper">
+                            <input type="checkbox" id="overlay-enable" checked>
+                            <label for="overlay-enable">Enable Overlay</label>
+                            <input type="color" id="page-bg-overlay-color" value="#000000">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <button type="button" class="accordion-header">
+                    <h3>SEO & Sharing</h3>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-panel">
+                    <label for="seo-title">Page Title</label>
+                    <input type="text" id="seo-title" placeholder="Title for browser tab & sharing">
+                    <label for="seo-description">Meta Description</label>
+                    <textarea id="seo-description" placeholder="A short page description for search engines."></textarea>
+                    <label for="seo-image-url">Social Share Image URL</label>
+                    <input type="url" id="seo-image-url" placeholder="Image to show when sharing the link">
+                    <label for="analytics-script">Analytics Script</label>
+                    <textarea id="analytics-script" placeholder="Paste your analytics script tag here (e.g., from Google Analytics)"></textarea>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <button type="button" class="accordion-header active">
+                    <h3>Your Content</h3>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-panel" style="max-height: 1500px;">
+                    <div id="links-container"></div>
+                    <div class="add-buttons-container">
+                        <button id="add-link-btn"><i class="fa-solid fa-link"></i> Add Link</button>
+                        <button id="add-video-btn"><i class="fa-brands fa-youtube"></i> Add YouTube</button>
+                        <button id="add-header-btn"><i class="fa-solid fa-heading"></i> Add Header</button>
+                        <button id="add-spotify-btn"><i class="fa-brands fa-spotify"></i> Add Spotify</button>
+                        <button id="add-mail-btn"><i class="fa-solid fa-envelope-open-text"></i> Add Signup</button>
+                        <button id="add-divider-btn"><i class="fa-solid fa-minus"></i> Add Divider</button>
+                        <button id="add-image-btn"><i class="fa-solid fa-image"></i> Add Image</button>
+                        <button id="add-gallery-btn"><i class="fa-solid fa-images"></i> Add Gallery</button>
+                        <button id="add-countdown-btn"><i class="fa-solid fa-clock"></i> Add Countdown</button>
+                    </div>
+                </div>
+            </div>
+
+            <button id="generate-btn" class="btn-primary">Generate HTML</button>
+            <button id="reset-btn" class="btn-danger">Reset All Settings</button>
+
+        </div>
+
+        <div class="preview" id="preview-wrapper">
+            <div class="preview-content" id="preview-content">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5NiIgaGVpZHRoPSI5NiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjY2RjZWNkIj48cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgM2MxLjY2IDAgMyAxLjM0IDMgMyAwIDEuMDktLjU5IDIuMDQtMS4yNSAyLjU2QzE0LjUgMTAuMDkgMTYgMTEuOTEgMTYgMTR2MWgtOGMtLjAxLTUuMzQgNS4zMy02IDggLTYgMS4wNiAwIDIuMDYtLjI1NSYyLjkyLS42OUMxNC4zNyAxMC4xNyAxMiAxMCAxMiA3LjVjLTEuMSAwLTItLjktMi0yczAuOS0yIDItMnpNMTIgMTRjLTIuMjEgMC00IDEuNzktNCA0djJoOHYtMmMwLTIuMjEtMS43OS00LTQtNHoiLz48L3N2Zz4=" alt="Profile Picture" id="preview-pic">
+                <h1 id="preview-name">Your Name</h1>
+                <p id="preview-bio">A little about yourself...</p>
+                <div id="preview-links"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modal" class="modal-container">
+        <div class="modal-content">
+            <span id="close-btn" class="close-btn">×</span>
+            <h2>Your Generated HTML</h2>
+            <p>Copy all the code below and save it in a new file named `index.html`.</p>
+            <textarea id="html-output" readonly></textarea>
+        </div>
+    </div>
+    
+    <div id="icon-modal" class="modal-container">
+        <div class="modal-content icon-picker-modal">
+            <span id="icon-close-btn" class="close-btn">×</span>
+            <h3>Choose an Icon</h3>
+            <input type="text" id="icon-search" placeholder="Search for an icon...">
+            <div id="icon-grid"></div>
+        </div>
+    </div>
+
+    <div id="theme-modal" class="modal-container">
+        <div class="modal-content theme-picker-modal">
+            <span id="theme-close-btn" class="close-btn">×</span>
+            <h3>Choose a Theme</h3>
+            <div id="theme-grid"></div>
+        </div>
+    </div>
+
+    <div id="font-modal" class="modal-container">
+        <div class="modal-content font-picker-modal">
+            <span id="font-close-btn" class="close-btn">×</span>
+            <h3>Choose a Font</h3>
+            <div id="font-grid"></div>
+        </div>
+    </div>
+
+    <div id="animation-modal" class="modal-container">
+    <div class="modal-content animation-picker-modal">
+        <span id="animation-close-btn" class="close-btn">×</span>
+        <h3>Choose an Animation</h3>
+        <div id="animation-grid"></div>
+    </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
