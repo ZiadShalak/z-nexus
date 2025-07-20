@@ -1,4 +1,3 @@
-# .github/workflows/deploy.yml
 name: 🚀 Deploy to Server
 
 on:
@@ -16,25 +15,23 @@ jobs:
 
       - name: Setup SSH
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y openssh-client
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          printf "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null\n" > ~/.ssh/config
+          printf "Host z-nexus.com\n  Port ${{ secrets.SSH_PORT }}\n  StrictHostKeyChecking no\n" > ~/.ssh/config
 
       - name: Backup remote site
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
             "mkdir -p ${{ secrets.BACKUP_PATH }} && \
-             tar czf ${{ secrets.BACKUP_PATH }}/linkpage-$(date +%Y%m%d-%H%M%S).tar.gz \
+             tar czf ${{ secrets.BACKUP_PATH }}/z-nexus-$(date +%Y%m%d-%H%M%S).tar.gz \
                -C $(dirname ${{ secrets.DEPLOY_PATH }}) $(basename ${{ secrets.DEPLOY_PATH }})"
 
       - name: Upload via SCP
         run: |
-          scp -r * ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}
+          scp -P ${{ secrets.SSH_PORT }} -r * ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}
 
-      - name: Fix remote perms
+      - name: Fix remote permissions
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
             "chmod -R a+rX ${{ secrets.DEPLOY_PATH }}"
