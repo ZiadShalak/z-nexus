@@ -23,7 +23,7 @@ jobs:
       - name: Backup remote site
         run: |
           ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            "mkdir -p ${{ secrets.BACKUP_PATH }} && \
+            "sudo mkdir -p ${{ secrets.BACKUP_PATH }} && \
              tar czf ${{ secrets.BACKUP_PATH }}/z-nexus-$(date +%Y%m%d-%H%M%S).tar.gz \
                -C $(dirname ${{ secrets.DEPLOY_PATH }}) $(basename ${{ secrets.DEPLOY_PATH }})"
 
