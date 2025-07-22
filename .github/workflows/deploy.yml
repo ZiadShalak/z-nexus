@@ -33,7 +33,7 @@ jobs:
 
       - name: Fix ownership
         run: |
-          ssh z-nexus "sudo chown -R ${{ secrets.SSH_USER }}:${{ secrets.SSH_USER }} ${{ secrets.DEPLOY_PATH }}"
+          ssh z-nexus "[[ $(stat -c '%U' ${{ secrets.DEPLOY_PATH }}) != '${{ secrets.SSH_USER }}' ]] && echo '${{ secrets.SSH_PASSWORD }}' | sudo -S chown -R ${{ secrets.SSH_USER }}:${{ secrets.SSH_USER }} ${{ secrets.DEPLOY_PATH }} || echo 'Ownership OK'"
 
       - name: Fix remote permissions
         run: |
