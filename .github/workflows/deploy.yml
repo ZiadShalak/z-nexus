@@ -31,6 +31,10 @@ jobs:
         run: |
           scp -r * z-nexus:${{ secrets.DEPLOY_PATH }}
 
+      - name: Fix ownership
+        run: |
+          ssh z-nexus "sudo chown -R ${{ secrets.SSH_USER }}:${{ secrets.SSH_USER }} ${{ secrets.DEPLOY_PATH }}"
+
       - name: Fix remote permissions
         run: |
           ssh z-nexus \
