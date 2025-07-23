@@ -1,11 +1,34 @@
-/* Basic setup */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
+/* =================================================================
+   1. Global & Basic Setup
+   - General styles, fonts, and the new App UI color theme.
+   ================================================================= */
+
+/* --- App UI Color Theme (Earthy & Organic) --- */
+:root {
+    --app-bg: #FAF3E0;               /* Warm Beige */
+    --app-surface: #FFFFFF;          /* White surface for contrast */
+    --app-text-primary: #3E3E3E;     /* Slate */
+    --app-text-secondary: #707070;   /* Lighter Slate */
+    --app-accent: #9DBF9E;            /* Sage Green */
+    --app-primary-btn: #007bff;
+    --app-danger-btn: #e53e3e;
+    --app-border: #eccaca;           /* A very light border */
+    --app-hover: #F5F5F5;             /* Light gray for hover on white surface */
 }
 
-/* Mobile-first container: stack controls above preview */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--app-bg);
+    color: var(--app-text-primary);
+    margin: 0;
+}
+
+* { box-sizing: border-box; }
+
+/* =================================================================
+   2. Main Layout (App Container, Controls, Preview)
+   ================================================================= */
+
 .app-container {
     display: flex;
     flex-direction: column;
@@ -16,39 +39,40 @@ body {
     align-items: flex-start;
 }
 
-/* Ensure both panels span full width on narrow screens */
-.controls,
-.preview {
+.controls {
     width: 100%;
-}
-
-.controls,
-.preview {
-    background: #ffffff;
+    background: var(--app-surface);
     padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
-
-.controls {
+    border: 1px solid var(--app-border);
     flex: 1;
     display: flex;
     flex-direction: column;
 }
 
 .preview {
+    width: 100%;
     flex: 1;
     background: transparent;
-    transition: background-color 0.3s, background-image 0.3s;
+    border: none;
     position: sticky;
     top: 2rem;
+
+    border-radius:  24px;
+    overflow: hidden;
 }
+
+/* =================================================================
+   3. General Control Elements (Headers, Labels, Inputs, Buttons)
+   ================================================================= */
 
 h2, h3 {
     margin-top: 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--app-border);
     padding-bottom: 0.75rem;
     margin-bottom: 1rem;
+    color: var(--app-text-primary);
 }
 
 label {
@@ -56,158 +80,250 @@ label {
     font-weight: 500;
     font-size: 0.9rem;
     margin-bottom: 0.25rem;
-    color: #555;
+    color: var(--app-text-secondary);
 }
 
-input[type="text"], input[type="url"], textarea, select {
+input[type="text"],
+input[type="url"],
+textarea,
+select {
     width: 100%;
     padding: 0.75rem;
     margin-bottom: 1rem;
-    border: 1px solid #ddd;
+    border: 1px solid #D9E4DD;
     border-radius: 6px;
-    box-sizing: border-box;
     font-size: 1rem;
+    background-color: #FDFDFD;
+    color: var(--app-text-primary);
 }
-textarea { min-height: 80px; resize: vertical; }
-button { width: 100%; padding: 0.85rem; margin-top: 0.5rem; margin-bottom: 1rem; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background-color 0.2s; }
-.btn-primary { background-color: #007bff; color: white; }
-.btn-primary:hover { background-color: #0056b3; }
-.btn-danger { background-color: #e53e3e; color: white; }
-.btn-danger:hover { background-color: #c53030; }
-.color-controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center; }
-.color-controls input[type="color"] { width: 100%; height: 40px; padding: 0; border: 1px solid #ddd; border-radius: 6px; }
-.color-controls label { margin-bottom: 0.5rem; }
-.add-buttons-container { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-.add-buttons-container button { margin: 0; padding: 0.5rem; font-size: 0.85rem; background-color: #6c757d; color: white; }
-.add-buttons-container button:hover { background-color: #5a6268; }
+input:focus, textarea:focus {
+    outline: 2px solid var(--app-accent);
+    border-color: var(--app-accent);
+}
+
+button {
+    width: 100%;
+    padding: 0.85rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--app-primary-btn);
+    color: white;
+}
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-danger {
+    background-color: var(--app-danger-btn);
+    color: white;
+}
+.btn-danger:hover {
+    background-color: #c53030;
+}
+/* =================================================================
+   4. Specific Control Components
+   - Styles for specialized control groups like color pickers,
+     content fields, accordions, etc.
+   ================================================================= */
+
+/* --- Accordion --- */
+.accordion {
+    border-bottom: 1px solid var(--app-border);
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.accordion:last-of-type {
+    border-bottom: none;
+}
+.accordion-header {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 0.5rem 0;
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.accordion-header h2, .accordion-header h3 {
+    border: none;
+    margin: 0;
+    padding: 0;
+    color: var(--app-text-primary);
+}
+.accordion-header i {
+    transition: transform 0.3s ease;
+}
+.accordion-header.active i {
+    transform: rotate(180deg);
+}
+.accordion-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    padding: 0 0.25rem;
+}
+
+/* --- Content Fields (Draggable Items) --- */
 .content-field {
     position: relative;
     cursor: grab;
-    background: #f8f9fa;
+    background: var(--app-hover);
     padding: 0.75rem;
     padding-right: 2.5rem;
-    border: 1px dashed #ddd;
+    border: 1px dashed #D9E4DD;
     margin-bottom: 1rem;
     border-radius: 6px;
 }
-.sortable-ghost { opacity: 0.4; background: #cde4ff; }
-.delete-btn { position: absolute; top: 50%; right: 8px; transform: translateY(-50%); background: none; border: none; color: #999; font-size: 1.5rem; font-weight: bold; cursor: pointer; padding: 0 0.5rem; width: auto; margin: 0; }
-.delete-btn:hover { color: #e53e3e; background: none; }
-.link-field, .header-field, .mail-field, .spotify-options { display: flex; gap: 0.5rem; align-items: center; }
-.header-field p, .mail-field p, .spotify-options p { margin: 0; font-size: 0.9rem; color: #555; font-weight: bold; white-space: nowrap; }
-.link-field input, .header-field input, .mail-field input { flex-grow: 1; margin: 0; }
-.link-field select { width: 120px; margin: 0; }
-.spotify-options { font-size: 0.9rem; margin-top: -0.5rem; }
-.spotify-options input { width: auto; margin: 0 0.5rem 0 0; }
-
-/* Preview Styles */
-.preview-content {
-    --bg-color: #ffffff;
-    --text-color: #000000;
-    --button-color: #333333;
-    --font-family: 'System Default', sans-serif;
-    font-family: var(--font-family);
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    max-width: 320px;
-    margin: auto;
-    text-align: center;
-    padding: 2rem;
-    border-radius: 24px;
-    transition: background-color 0.3s, color 0.3s;
+.sortable-ghost {
+    opacity: 0.4;
+    background: #cde4ff;
 }
-#preview-pic { border-radius: 50%; width: 96px; height: 96px; object-fit: cover; border: 3px solid var(--button-color); margin-bottom: 1rem; }
-#preview-name { margin: 0.5rem 0; color: var(--text-color); }
-#preview-bio { color: var(--text-color); opacity: 0.8; font-size: 0.9rem; }
-#preview-links h4 { margin: 1.5rem 0 0.5rem 0; color: var(--text-color); }
-#preview-links .animated-button { display: flex; align-items: center; justify-content: center; background: var(--button-color); color: white; text-decoration: none; padding: 1rem; margin: 0.75rem 0; border-radius: 8px; transition: transform 0.2s; border: none; width: 100%; box-sizing: border-box; font-size: inherit; font-family: inherit; cursor: pointer; font-weight: 500; }
-#preview-links .animated-button:hover { transform: scale(1.05); }
-#preview-links .animated-button i { margin-right: 0.75rem; }
-#preview-links .youtube-embed { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; margin: 1rem 0; border-radius: 12px; }
-#preview-links .youtube-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-#preview-links .spotify-embed iframe { border-radius: 12px; margin: 1rem 0; }
-#preview-links .mail-form { margin: 1rem 0; }
-#preview-links .mail-form input { width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; margin-bottom: 0.5rem; background-color: var(--bg-color); color: var(--text-color); }
-
-/* --- Theme Classes --- */
-.theme-dark { --bg-color: #121212; --text-color: #ffffff; --button-color: #bb86fc; }
-.theme-forest { --bg-color: #f0f4f0; --text-color: #2c3e50; --button-color: #27ae60; }
-.theme-sunset { --bg-color: #4a4e69; --text-color: #f2e9e4; --button-color: #f28482; }
-.theme-ocean { --bg-color: #eef7ff; --text-color: #0d3b66; --button-color: #3a86ff; }
-.theme-sakura { --bg-color: #fff0f5; --text-color: #5c374c; --button-color: #ff8fab; }
-.theme-latte { --bg-color: #f5e6d3; --text-color: #4a403a; --button-color: #a68a64; }
-.theme-mono { --bg-color: #f4f4f4; --text-color: #111111; --button-color: #333333; }
-.theme-matrix { --bg-color: #0d0208; --text-color: #00ff41; --button-color: #008f11; }
-.theme-graphite { --bg-color: #212529; --text-color: #f8f9fa; --button-color: #6c757d; }
-.theme-royal { --bg-color: #4c2a85; --text-color: #fada5e; --button-color: #361066; }
-.theme-coral { --bg-color: #fff0f3; --text-color: #582c36; --button-color: #ff6b6b; }
-.theme-mint { --bg-color: #f1fcf7; --text-color: #0a3d24; --button-color: #20c997; }
-.theme-dusk { --bg-color: #3d405b; --text-color: #f4f1de; --button-color: #e07a5f; }
-
-/* Modal Styles */
-.modal-container { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
-.modal-content { background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 700px; border-radius: 8px; position: relative; }
-.close-btn { color: #aaa; position: absolute; top: 10px; right: 25px; font-size: 28px; font-weight: bold; cursor: pointer; }
-.close-btn:hover, .close-btn:focus { color: black; text-decoration: none; }
-#html-output { width: 100%; height: 300px; margin-top: 1rem; font-family: monospace; font-size: 14px; }
-a i, p i { margin-right: 0.75rem; }
-
-/* Icon Picker Button in Controls */
-.icon-picker-btn {
-    width: 60px !important;
-    flex-shrink: 0;
-    margin: 0 !important;
+.delete-btn {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--app-text-secondary);
     font-size: 1.5rem;
-    background-color: #e9ecef !important;
-    color: #495057 !important;
-    border: 1px solid #ddd;
-}
-.icon-picker-btn:hover {
-    background-color: #dee2e6 !important;
-}
-
-/* Icon Picker Modal Styles */
-.icon-picker-modal { max-width: 500px; }
-#icon-search { margin-bottom: 1rem; }
-#icon-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-    gap: 0.75rem;
-    max-height: 400px;
-    overflow-y: auto;
-    padding-top: 0.5rem;
-}
-.icon-grid-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 0.75rem;
-    border: 1px solid #eee;
-    border-radius: 6px;
+    font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.2s, color 0.2s;
-    font-size: 1.5rem;
+    padding: 0 0.5rem;
+    width: auto;
+    margin: 0;
 }
-.icon-grid-item:hover {
-    background-color: #007bff;
-    color: white;
+.delete-btn:hover {
+    color: var(--app-danger-btn);
+    background: none;
 }
 
+/* --- Specific Field Layouts (Link, Header, etc.) --- */
+.link-field, .header-field, .mail-field, .spotify-options {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+.header-field p, .mail-field p, .spotify-options p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--app-text-secondary);
+    font-weight: bold;
+    white-space: nowrap;
+}
+.link-field input, .header-field input, .mail-field input {
+    flex-grow: 1;
+    margin: 0;
+}
+.link-field select {
+    width: 120px;
+    margin: 0;
+}
+.spotify-options {
+    font-size: 0.9rem;
+    margin-top: -0.5rem;
+}
+.spotify-options input {
+    width: auto;
+    margin: 0 0.5rem 0 0;
+}
+
+/* --- Color & Background Controls --- */
+.color-controls {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    text-align: center;
+}
+.color-controls input[type="color"] {
+    width: 100%;
+    height: 40px;
+    padding: 0;
+    border: 1px solid #D9E4DD;
+    border-radius: 6px;
+}
+.color-controls label {
+    margin-bottom: 0.5rem;
+}
+.control-group {
+    background-color: var(--app-hover);
+    padding: 1rem;
+    border: 1px solid var(--app-border);
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+.overlay-controls {
+    display: none; /* Enabled via JS */
+    align-items: center;
+    gap: 10px;
+    margin-top: 1rem;
+}
+.overlay-controls label {
+    margin-bottom: 0;
+}
+.overlay-controls input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+.overlay-controls input[type="color"] {
+    width: 60px;
+    height: 30px;
+    margin-bottom: 0;
+}
+.input-with-clear > div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+}
+
+
+.input-with-clear input[type="color"] {
+    flex-grow: 1;
+    margin-bottom: 1rem;
+}
+
+.reset-btn-small {
+    padding: 0.5rem;
+    width: auto;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    line-height: 1;
+    background-color: var(--app-hover);
+    color: var(--app-text-secondary);
+    border: 1px solid var(--app-border);
+    flex-shrink: 0;
+}
+
+.reset-btn-small:hover {
+    background-color: #e2e6ea;
+}
+
+/* --- File Upload & Gallery Controls --- */
 .file-upload-label {
     background: #6c757d;
-    color: white !important;
+    color: white; /* Removed !important */
     padding: 0.5rem;
     border-radius: 6px;
     cursor: pointer;
     text-align: center;
-    font-size: 0.85rem !important;
+    font-size: 0.85rem; /* Removed !important */
     white-space: nowrap;
 }
 .file-upload-label:hover {
     background: #5a6268;
 }
-
 .gallery-image-control {
     display: flex;
     gap: 0.5rem;
@@ -218,7 +334,7 @@ a i, p i { margin-right: 0.75rem; }
     margin-bottom: 0.5rem;
 }
 .gallery-image-control input {
-    margin-bottom: 0 !important;
+    margin-bottom: 0; /* Removed !important */
 }
 .delete-gallery-image-btn {
     background: none;
@@ -246,6 +362,134 @@ a i, p i { margin-right: 0.75rem; }
     background-color: #8a9a71;
 }
 
+/* --- "Add Content" Buttons --- */
+.add-buttons-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+.add-buttons-container button {
+    margin: 0;
+    padding: 0.5rem;
+    font-size: 0.85rem;
+    background-color: var(--app-text-secondary);
+    color: white;
+}
+.add-buttons-container button:hover {
+    background-color: var(--app-text-primary);
+}
+
+/* =================================================================
+   5. Preview Pane Styles
+   - All styles related to the live preview card and its contents.
+   ================================================================= */
+
+/* --- Preview Card & Base Styles --- */
+.preview-content {
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --button-color: #333333;
+    --font-family: 'System Default', sans-serif;
+
+    font-family: var(--font-family);
+    background-color: var(--bg-color) ;
+    color: var(--text-color);
+    max-width: 320px;
+    margin: 3rem auto;
+    text-align: center;
+    padding: 2rem;
+    border-radius: 24px;
+    transition: background-color 0.3s, color 0.3s;
+}
+.shadow-soft { box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+.shadow-hard { box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+.shadow-none { box-shadow: none; }
+
+/* --- Preview Profile & Bio --- */
+#preview-pic {
+    border-radius: 50%;
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    border: 3px solid var(--button-color);
+    margin-bottom: 1rem;
+}
+#preview-name {
+    margin: 0.5rem 0;
+    color: var(--text-color);
+}
+#preview-bio {
+    color: var(--text-color);
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+/* --- Preview Content Blocks (Links, Embeds, etc.) --- */
+#preview-links h4 {
+    margin: 1.5rem 0 0.5rem 0;
+    color: var(--text-color);
+}
+#preview-links .animated-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--button-color);
+
+    /* Change this line */
+    color: var(--text-color); /* From: color: white; */
+
+    text-decoration: none;
+    padding: 1rem;
+    margin: 0.75rem 0;
+    border-radius: 8px;
+    transition: transform 0.2s;
+    border: none;
+    width: 100%;
+    font-size: inherit;
+    font-family: inherit;
+    cursor: pointer;
+    font-weight: 500;
+}
+#preview-links .animated-button:hover {
+    transform: scale(1.05);
+}
+#preview-links .animated-button i {
+    margin-right: 0.75rem;
+}
+#preview-links .youtube-embed {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    background: #000;
+    margin: 1rem 0;
+    border-radius: 12px;
+}
+#preview-links .youtube-embed iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+#preview-links .spotify-embed iframe {
+    border-radius: 12px;
+    margin: 1rem 0;
+}
+#preview-links .mail-form {
+    margin: 1rem 0;
+}
+#preview-links .mail-form input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
 .gallery-scroll-container {
     display: flex;
     gap: 10px;
@@ -272,49 +516,6 @@ a i, p i { margin-right: 0.75rem; }
     transition: transform 0.2s;
 }
 .gallery-image-link:hover img { transform: scale(1.05); }
-
-/* Card Shadow Styles */
-.shadow-soft { box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-.shadow-hard { box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
-.shadow-none { box-shadow: none; }
-
-
-.input-with-clear > div {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.control-group {
-    background-color: #f8f9fa;
-    padding: 1rem;
-    border: 1px solid #e9ecef;
-    border-radius: 6px;
-    margin-bottom: 1rem;
-}
-.mt-1 {
-    margin-top: 1rem;
-}
-
-.overlay-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 1rem;
-}
-.overlay-controls label {
-    margin-bottom: 0;
-}
-.overlay-controls input[type="checkbox"] {
-    width: auto;
-    margin: 0;
-}
-.overlay-controls input[type="color"] {
-    width: 60px;
-    height: 30px;
-    margin-bottom: 0;
-}
-
 .countdown-container {
     margin: 1.5rem auto;
     max-width: 480px;
@@ -350,7 +551,86 @@ a i, p i { margin-right: 0.75rem; }
     opacity: 0.7;
 }
 
-#theme-picker-btn {
+/* --- Theme Classes --- */
+.theme-dark { --bg-color: #121212; --text-color: #ffffff; --button-color: #bb86fc; }
+.theme-forest { --bg-color: #f0f4f0; --text-color: #2c3e50; --button-color: #27ae60; }
+.theme-sunset { --bg-color: #4a4e69; --text-color: #f2e9e4; --button-color: #f28482; }
+.theme-ocean { --bg-color: #eef7ff; --text-color: #0d3b66; --button-color: #3a86ff; }
+.theme-sakura { --bg-color: #fff0f5; --text-color: #5c374c; --button-color: #ff8fab; }
+.theme-latte { --bg-color: #f5e6d3; --text-color: #4a403a; --button-color: #a68a64; }
+.theme-mono { --bg-color: #f4f4f4; --text-color: #111111; --button-color: #333333; }
+.theme-matrix { --bg-color: #0d0208; --text-color: #00ff41; --button-color: #008f11; }
+.theme-graphite { --bg-color: #212529; --text-color: #f8f9fa; --button-color: #6c757d; }
+.theme-royal { --bg-color: #4c2a85; --text-color: #fada5e; --button-color: #361066; }
+.theme-coral { --bg-color: #fff0f3; --text-color: #582c36; --button-color: #ff6b6b; }
+.theme-mint { --bg-color: #f1fcf7; --text-color: #0a3d24; --button-color: #20c997; }
+.theme-dusk { --bg-color: #3d405b; --text-color: #f4f1de; --button-color: #e07a5f; }
+.theme-dracula { --bg-color: #282a36; --text-color: #f8f8f2; --button-color: #bd93f9; }
+
+/* =================================================================
+   6. Modal Styles (HTML Output, Pickers)
+   - Styles for all pop-up modals and their contents.
+   ================================================================= */
+
+/* --- Generic Modal Container & Content --- */
+.modal-container {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 700px;
+    border-radius: 8px;
+    position: relative;
+}
+.close-btn {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.close-btn:hover, .close-btn:focus {
+    color: black;
+    text-decoration: none;
+}
+#html-output {
+    width: 100%;
+    height: 300px;
+    margin-top: 1rem;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+/* --- Picker Buttons in Controls --- */
+/* Increased specificity by adding the parent selector */
+.link-field .icon-picker-btn {
+    width: 60px;
+    flex-shrink: 0;
+    margin: 0;
+    font-size: 1.5rem;
+    background-color: #e9ecef;
+    color: #495057;
+    border: 1px solid #ddd;
+}
+.link-field .icon-picker-btn:hover {
+    background-color: #dee2e6;
+}
+
+#theme-picker-btn, #font-picker-btn, #animation-picker-btn, #shadow-picker-btn {
     width: 100%;
     background-color: #fff;
     color: #333;
@@ -359,14 +639,40 @@ a i, p i { margin-right: 0.75rem; }
     font-weight: normal;
     margin-top: 0;
 }
-#theme-picker-btn:hover {
+#theme-picker-btn:hover, #font-picker-btn:hover, #animation-picker-btn:hover, #shadow-picker-btn:hover {
     background-color: #f8f9fa;
 }
 
-/* Theme Picker Modal */
-.theme-picker-modal {
-    max-width: 600px;
+/* --- Icon Picker Modal --- */
+.icon-picker-modal { max-width: 500px; }
+#icon-search { margin-bottom: 1rem; }
+#icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 0.75rem;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-top: 0.5rem;
 }
+.icon-grid-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    font-size: 1.5rem;
+}
+.icon-grid-item:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+/* --- Theme Picker Modal --- */
+.theme-picker-modal { max-width: 600px; }
 #theme-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -386,10 +692,7 @@ a i, p i { margin-right: 0.75rem; }
     transform: translateY(-3px);
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
-.theme-swatch-colors {
-    display: flex;
-    height: 80px;
-}
+.theme-swatch-colors { display: flex; height: 80px; }
 .theme-swatch-bg { flex: 3; }
 .theme-swatch-text { flex: 1; }
 .theme-swatch-btn { flex: 1; }
@@ -401,68 +704,8 @@ a i, p i { margin-right: 0.75rem; }
     font-size: 0.9rem;
 }
 
-/* Accordion Styles */
-.accordion {
-    border-bottom: 1px solid #eee;
-    padding-bottom: 0.5rem;
-    margin-bottom: 0.5rem;
-}
-.accordion:last-of-type {
-    border-bottom: none;
-}
-
-.accordion-header {
-    width: 100%;
-    background: none;
-    border: none;
-    text-align: left;
-    padding: 0.5rem 0;
-    margin: 0;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.accordion-header h2, .accordion-header h3 {
-    border: none;
-    margin: 0;
-    padding: 0;
-    color: #333;
-}
-.accordion-header i {
-    transition: transform 0.3s ease;
-}
-.accordion-header.active i {
-    transform: rotate(180deg);
-}
-
-.accordion-panel {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out;
-    padding: 0 0.25rem;
-}
-
-#overlay-controls-wrapper { display: none; }
-
-/* Font Picker Button */
-#font-picker-btn {
-    width: 100%;
-    background-color: #fff;
-    color: #333;
-    border: 1px solid #ddd;
-    text-align: left;
-    font-weight: normal;
-    margin-top: 0;
-}
-#font-picker-btn:hover {
-    background-color: #f8f9fa;
-}
-
-/* Font Picker Modal */
-.font-picker-modal {
-    max-width: 400px;
-}
+/* --- Font Picker Modal --- */
+.font-picker-modal { max-width: 400px; }
 #font-grid {
     display: flex;
     flex-direction: column;
@@ -480,27 +723,11 @@ a i, p i { margin-right: 0.75rem; }
     transition: background-color 0.2s;
 }
 .font-swatch:hover {
-    background-color: #f0f8ff; /* A light blue hover */
+    background-color: #f0f8ff;
 }
 
-/* Animation Picker Button */
-#animation-picker-btn {
-    width: 100%;
-    background-color: #fff;
-    color: #333;
-    border: 1px solid #ddd;
-    text-align: left;
-    font-weight: normal;
-    margin-top: 0;
-}
-#animation-picker-btn:hover {
-    background-color: #f8f9fa;
-}
-
-/* Animation Picker Modal */
-.animation-picker-modal {
-    max-width: 500px;
-}
+/* --- Animation Picker Modal --- */
+.animation-picker-modal { max-width: 500px; }
 #animation-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -518,11 +745,9 @@ a i, p i { margin-right: 0.75rem; }
     transition: background-color 0.2s;
 }
 .animation-swatch:hover {
-    background-color: #f0f8ff; /* A light blue hover */
+    background-color: #f0f8ff;
 }
-.animation-swatch-preview {
-    padding: 1.5rem;
-}
+.animation-swatch-preview { padding: 1.5rem; }
 .animation-swatch-button {
     background-color: #333;
     color: white;
@@ -535,26 +760,118 @@ a i, p i { margin-right: 0.75rem; }
     font-weight: 500;
 }
 
-/* Mobile-first button layout */
-#preview-links {
+/* --- Shadow Picker Modal --- */
+.shadow-picker-modal { max-width: 400px; }
+#shadow-grid {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-top: 0.5rem;
 }
-#preview-links .animated-button {
-    width: 100%;
+.shadow-swatch {
+    cursor: pointer;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 1rem;
+    font-size: 1.2rem;
+    transition: background-color 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.shadow-swatch:hover {
+    background-color: #f0f8ff;
+}
+.shadow-swatch-preview {
+    width: 60px;
+    height: 40px;
+    border-radius: 4px;
+    background-color: #f8f9fa;
 }
 
-@media (min-width: 600px) {
-    #preview-links {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 1rem;
+/* =================================================================
+   7. Mobile & Responsive Styles
+   ================================================================= */
+
+/* By default, the button is hidden on desktop */
+.preview-toggle-btn {
+    display: none;
+}
+
+@media (max-width: 799px) {
+    .app-container {
+        padding: 0;
+        background-color: var(--app-surface);
     }
-    #preview-links .animated-button {
-        width: auto;
-        min-width: 200px;
+    .controls, .preview {
+        padding: 1.5rem 1rem;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        box-shadow: none;
+        border-top: none;
+        border-bottom: 1px solid var(--app-border);
+    }
+    .controls {
+        padding-bottom: 6rem;
+    }
+    .preview {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: var(--app-bg);
+        z-index: 100;
+        overflow-y: auto;
+        padding-top: 4rem;
+        padding-bottom: 6rem;
+    }
+    
+    .preview-toggle-btn {
+        display: block;
+        width: calc(100% - 2rem);
+        position: fixed;
+        bottom: 1rem;
+        left: 1rem;
+        z-index: 101;
+        background-color: var(--app-primary-btn);
+        color: white;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        opacity: 0.7;
+        transform: translateY(10px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    /* This state is added by JS when scrolling down */
+    .preview-toggle-btn.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    /* Logic to show/hide panels */
+    .app-container:not(.preview-visible) .preview {
+        display: none;
+    }
+    .app-container.preview-visible .controls {
+        display: none;
+    }
+    .app-container.preview-visible .preview {
+        display: block;
+    }
+
+    /* When in preview mode, button is always fully visible and changes color */
+    .app-container.preview-visible .preview-toggle-btn {
+        background-color: #6c757d;
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .color-controls,
+    #animation-grid {
+        grid-template-columns: 1fr;
     }
 }
 
