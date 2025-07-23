@@ -43,4 +43,4 @@ jobs:
 
       - name: Fix remote permissions
         run: |
-          echo '${{ secrets.SSH_PASSWORD }}' | sudo -S chmod -R a+rX '${{ secrets.DEPLOY_PATH }}''"
+          ssh z-nexus "echo '${{ secrets.SSH_PASSWORD }}' | sudo -S chmod -R a+rX '${{ secrets.DEPLOY_PATH }}'"
